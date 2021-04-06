@@ -49,6 +49,7 @@ for i=1:6
     GCM_c_sd(i)=std(GCM_c_samples);
 end
 % DEM model
+% parameter estimation of GCM model
 for i=1:6
     parameterEst = ...
         fminsearchbnd(@(param)L06_DEMmodel(param,stimval,dataF(i,:),Ntest, feedback), [rand,rand], [0,0], [Inf,Inf]);
@@ -56,6 +57,7 @@ for i=1:6
     DEM_gamma(i)=parameterEst(2);
     AIC(i,2)= 2*(minusloglikelihood+2);
 end
+% CI of parameters
 figure;
 for i=1:6
     [~,p]=L06_DEMmodel([DEM_c(i),DEM_gamma(i)], stimval, dataF(i,:),Ntest, feedback);
@@ -76,7 +78,7 @@ for i=1:6
     DEM_gamma_sd(i)=std(DEM_gamma_samples);
 end
 % GRT model
-figure;
+% parameter estimation of GCM model
 options=optimset('MaxFunEvals',2000,'MaxIter',2000);
 for i=1:6
     parameterEst = ...
@@ -86,6 +88,8 @@ for i=1:6
     GRT_sigma(i)=parameterEst(3);
     AIC(i,3)=2*(minusloglikelihood+3);
 end
+% CI of parameters
+figure;
 for i=1:6
     [~,p]=L06_GRTmodel([GRT_beta1(i),GRT_beta2(i),GRT_sigma(i)], stimval, dataF(i,:),Ntest);
     subplot(2,3,i);
