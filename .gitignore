@@ -4,3 +4,5 @@ course_materials/
 *.zip
 Bayesian_examples/
 *.asv
+*.docx
+*.pdf
