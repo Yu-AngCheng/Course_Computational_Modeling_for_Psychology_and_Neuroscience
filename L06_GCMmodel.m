@@ -6,6 +6,8 @@ for i=1:length(stimuluslevel)
     sb=sum(s.*exemplar(2,:));
     p(i)=sa/(sa+sb);
 end
+p(p<1e-16) = 1e-16;
+p(p>1-1e-16) = 1-1e-16;
 minusloglikelihood=-sum(data.*log(p)+(N-data).*log(1-p));
 end
 
