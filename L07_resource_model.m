@@ -1,3 +1,4 @@
+%% resource model for working memory
 clear
 traillist=genTrials(1000,360); % 360 angles and each for 1000 repetitions
 sd=deg2rad(22);% target error 
