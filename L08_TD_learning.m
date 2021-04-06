@@ -3,7 +3,7 @@ clear
 tic
 % value_table for 6 states
 Value=zeros(6);
-% -1 means impossible transition
+% -1 means impermissible transition
 rewardtable =...
     [-1, -1, -1, -1, 0, -1;
     -1, -1, -1, 0, -1, 100;
