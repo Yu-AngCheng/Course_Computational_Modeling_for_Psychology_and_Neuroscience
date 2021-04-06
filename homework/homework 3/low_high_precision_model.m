@@ -56,4 +56,4 @@ end
 lppd=sum(log(mean(probability,2)));
 pWAIC=sum(var(log(probability),[],2));
 WAIC=-2*lppd+2*pWAIC;
-save Low_High_Measurement_Precision_Model1
+save Low_High_Measurement_Precision_Model

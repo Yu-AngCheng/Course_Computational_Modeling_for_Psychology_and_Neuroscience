@@ -74,4 +74,4 @@ xlabel('\mu','fontsize',16);
 ylabel('Posterior Density','fontsize',16);
 title('Same Measurement Precision Model','fontsize',16);
 hold off
-save same_measurement_precision_model
+save Same_Measurement_Precision_Model
