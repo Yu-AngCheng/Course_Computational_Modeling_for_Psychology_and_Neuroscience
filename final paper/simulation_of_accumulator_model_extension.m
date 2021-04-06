@@ -1,0 +1,311 @@
+% mask-target SOA
+% metacontrast(mask-target SOA=0) & difference>c
+% using E(X)ornot-->important
+% based on birth-death-process
+clear;
+lambdab=0.05;
+lambda=1.0;
+niu=0.02;
+c=30;
+blocks=2;
+results=[];
+EXornot=1;
+t=0:0.001:8;
+f=4;
+oscillator1=1+0.2*sin(2*pi*f*t);
+oscillator2=1-0.2*sin(2*pi*f*t);
+for cases=1:blocks
+    trialeach=25;
+    triallist=genTrials(trialeach,[2,2,8]);%1-left,2-right
+    trials=length(triallist);
+    triallist=[triallist,nan(length(triallist),2)];
+    triallist(:,3)=triallist(:,3)*20;
+    for i=1:trials
+        IL=zeros(1,2);
+        ML=zeros(1,2);
+        eps=0.1;
+        primecycles=43;
+        maskcycles=50;
+        prime_mask_SOAcycles=60;
+        mask_target_SOAcycles=triallist(:,3);
+        targetcycles=200;
+        ITIcycles=4000;
+        flag=false;
+        time=0;
+        for j=1:primecycles+prime_mask_SOAcycles
+            time=time+1;
+            IL(triallist(i,1))=1;
+            if triallist(i,1)==1
+                p1=[ML(1)*niu*eps,(lambda*oscillator1(time)+lambdab*oscillator2(time))*eps,0];
+                p1(3)=1-p1(1)-p1(2);
+                if(EXornot)
+                    ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                else
+                    ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                end
+                p2=[ML(2)*niu*eps,lambdab*oscillator2(time)*eps,0];
+                p2(3)=1-p2(1)-p2(2);
+                if(EXornot)
+                    ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                else
+                    ML(2)=ML(2)+randsample([-1,1,0],1,true,p2); %#ok<*UNRCH>
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                end
+            elseif triallist(i,1)==2
+                p2=[ML(2)*niu*eps,(lambda*oscillator1(time)+lambdab*oscillator2(time))*eps,0];
+                p2(3)=1-p2(1)-p2(2);
+                if(EXornot)
+                    ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                else
+                    ML(2)=ML(2)+randsample([-1,1,0],1,true,p2);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                end
+                p1=[ML(1)*niu*eps,lambdab*oscillator2(time)*eps,0];
+                p1(3)=1-p1(1)-p1(2);
+                if(EXornot)
+                    ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                else
+                    ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                end
+            end
+        end
+        for j=1:maskcycles
+            time=time+1;
+            p1=[ML(1)*niu*eps+lambda*oscillator1(time)*eps,lambdab*oscillator2(time)*eps,0];
+            p1(3)=1-p1(1)-p1(2);
+            if(EXornot)
+                ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                if(ML(1)<0)
+                    ML(1)=0;
+                end
+            else
+                ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                if(ML(1)<0)
+                    ML(1)=0;
+                end
+            end
+            p2=[ML(2)*niu*eps+lambda*oscillator1(time)*eps,lambdab*oscillator2(time)*eps,0];
+            p2(3)=1-p2(1)-p2(2);
+            if(EXornot)
+                ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                if(ML(2)<0)
+                    ML(2)=0;
+                end
+            else
+                ML(2)=ML(2)+randsample([-1,1,0],1,true,p2);
+                if(ML(2)<0)
+                    ML(2)=0;
+                end
+            end
+        end
+        for j=1:mask_target_SOAcycles
+            time=time+1;
+            p1=[ML(1)*niu*eps,lambdab*oscillator2(time)*eps,0];
+            p1(3)=1-p1(1)-p1(2);
+            if(EXornot)
+                ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                if(ML(1)<0)
+                    ML(1)=0;
+                end
+            else
+                ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                if(ML(1)<0)
+                    ML(1)=0;
+                end
+            end
+            p2=[ML(2)*niu*eps,lambdab*oscillator2(time)*eps,0];
+            p2(3)=1-p2(1)-p2(2);
+            if(EXornot)
+                ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                if(ML(2)<0)
+                    ML(2)=0;
+                end
+            else
+                ML(2)=ML(2)+randsample([-1,1,0],1,true,p2);
+                if(ML(2)<0)
+                    ML(2)=0;
+                end
+            end
+        end
+        for j=1:targetcycles
+            time=time+1;
+            IL(triallist(i,2))=1;
+            if triallist(i,2)==1
+                p1=[ML(1)*niu*eps,(lambda*oscillator1(time)+lambdab*oscillator2(time))*eps,0];
+                p1(3)=1-p1(1)-p1(2);
+                if(EXornot)
+                    ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                else
+                    ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                end
+                p2=[ML(2)*niu*eps,lambdab*oscillator2(time)*eps,0];
+                p2(3)=1-p2(1)-p2(2);
+                if(EXornot)
+                    ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                else
+                    ML(2)=ML(2)+randsample([-1,1,0],1,true,p2);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                end
+            elseif triallist(i,2)==2
+                p2=[ML(2)*niu*eps,(lambda*oscillator1(time)+lambdab*oscillator2(time))*eps,0];
+                p2(3)=1-p2(1)-p2(2);
+                if(EXornot)
+                    ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                else
+                    ML(2)=ML(2)+randsample([-1,1,0],1,true,p2);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                end
+                p1=[ML(1)*niu*eps,lambdab*oscillator2(time)*eps,0];
+                p1(3)=1-p1(1)-p1(2);
+                if(EXornot)
+                    ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                else
+                    ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                end
+            end
+            if(ML(1)>c)&&(flag==false)
+                triallist(i,4)=j;
+                triallist(i,5)=1;
+                flag=true;
+                break
+            elseif(ML(2)>c)&&(flag==false)
+                triallist(i,4)=j;
+                triallist(i,5)=2;
+                flag=true;
+                break
+            end
+        end
+        for j=1:ITIcycles
+            time=time+1;
+            IL(triallist(i,2))=1;
+            if triallist(i,2)==1
+                p1=[ML(1)*niu*eps,(lambda*oscillator1(time)+lambdab*oscillator2(time))*eps,0];
+                p1(3)=1-p1(1)-p1(2);
+                if(EXornot)
+                    ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                else
+                    ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                end
+                p2=[ML(2)*niu*eps,lambdab*oscillator2(time)*eps,0];
+                p2(3)=1-p2(1)-p2(2);
+                if(EXornot)
+                    ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                else
+                    ML(2)=ML(2)+randsample([-1,1,0],1,true,p2);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                end
+            elseif triallist(i,2)==2
+                p2=[ML(2)*niu*eps,(lambda*oscillator1(time)+lambdab*oscillator2(time))*eps,0];
+                p2(3)=1-p2(1)-p2(2);
+                if(EXornot)
+                    ML(2)=ML(2)+sum(p2.*[-1,1,0]);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                else
+                    ML(2)=ML(2)+randsample([-1,1,0],1,true,p2);
+                    if(ML(2)<0)
+                        ML(2)=0;
+                    end
+                end
+                p1=[ML(1)*niu*eps,lambdab*oscillator2(time)*eps,0];
+                p1(3)=1-p1(1)-p1(2);
+                if(EXornot)
+                    ML(1)=ML(1)+sum(p1.*[-1,1,0]);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                else
+                    ML(1)=ML(1)+randsample([-1,1,0],1,true,p1);
+                    if(ML(1)<0)
+                        ML(1)=0;
+                    end
+                end
+            end
+            if(ML(1)>c)&&(flag==false)
+                triallist(i,4)=j+targetcycles;
+                triallist(i,5)=1;
+                flag=true;
+                break
+            elseif(ML(2)>c)&&(flag==false)
+                triallist(i,4)=j+targetcycles;
+                triallist(i,5)=2;
+                flag=true;
+                break
+            end
+        end
+    end
+    results=[results;triallist];
+end
+results(:,6)=results(:,1)==results(:,2);
+idx=results(:,5)==results(:,2);
+[meanresult,sem,group]=grpstats(results(idx,4),results(idx,[6,3]),{'nanmean','sem','gname'});
+group=str2double(group);
+data=(-meanresult([9,10,11,12,13,14,15,16])+meanresult([1,2,3,4,5,6,7,8]))*0.1;
+figure
+
+plot(50:50:400,meanresult(1:8),'r-o');
+hold on
+plot(50:50:400,meanresult(9:16),'b-o');
+box off;
+
+yyaxis right;
+plot(50:50:400,data,'k-o');
+box off;
+legend({'Incongruent','Congruent','Priming effects'},'Location','bestoutside','orientation','horizontal');
+legend boxoff;
