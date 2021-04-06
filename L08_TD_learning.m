@@ -4,7 +4,6 @@ tic
 % value_table for 6 states
 Value=zeros(6);
 % -1 means impossible transition
-% state 6 is the destination
 rewardtable =...
     [-1, -1, -1, -1, 0, -1;
     -1, -1, -1, 0, -1, 100;
