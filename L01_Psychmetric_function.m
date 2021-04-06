@@ -1,4 +1,4 @@
-% Parameter fitting of psychophysical curve
+%% Parameter fitting of psychophysical curve
 I = [5, 7, 8, 10, 12]'; % Intensity of the light
 N = [10, 12, 10, 11, 9]'; % Number of trials
 C = [2, 3, 7, 9, 9]'; % Number of positive trials
