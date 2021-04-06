@@ -64,7 +64,7 @@ for j= 1:10
     path(j).statechain=[];% record the path
     path(j).statechain=[path(j).statechain state];
     while state~=6
-        if count > 5 % if more than 5 steps, then failure
+        if count > 5 % if more than 5 steps, then fail
             path(j).statechain=[];
             break
         end
