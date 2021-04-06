@@ -1,11 +1,12 @@
-%spike_train_simulation
+%% spike_train_simulation
 clear
-% stimulus
+
 eps=0.001;
 t=eps:eps:0.5;
+% stimulus
 stimulus=[repmat(-40,1,length(t)/5),repmat(-20,1,length(t)/5),...
     repmat(0,1,length(t)/5),repmat(20,1,length(t)/5),...
-    repmat(40,1,length(t)/5)]; %#ok<*REPMAT>
+    repmat(40,1,length(t)/5)];
 % tuning function
 rmax=55;
 smax=0;
@@ -13,7 +14,7 @@ sigmaf=20;
 tuning_function=@(s) rmax*exp(-0.5*(s-smax).^2/sigmaf^2);
 % mean firing rate
 firing_rate=tuning_function(stimulus);
-% spike_train
+% spike_train (poisson process)
 p=firing_rate*eps;
 num=5000;
 p=repmat(p,num,1);
