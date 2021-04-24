@@ -1,0 +1,20 @@
+# The Seven Scientists
+model{
+  for (i in 1:n){
+    zg[i] ~ dbern(phig[i])
+    x[i] ~ dnorm(mu,lambda[1]*equals(zg[i],0)+lambda[2]*equals(zg[i],1))
+    pr[i] <- dnorm(x[i],mu,lambda[1]*equals(zg[i],0)+lambda[2]*equals(zg[i],1))
+  }
+  # Priors
+  mu ~ dnorm(0,.001)
+  for (i in 1:n){
+  phig[i] ~ dbeta(1,1)
+  }
+  delta~dgamma(.001,.001)
+  lambdatemp ~ dgamma(.001,.001)
+  lambda[1] <- lambdatemp
+  lambda[2] <- lambda[1]+delta
+  sigma[1] <- 1/sqrt(lambda[1])
+  sigma[2] <- 1/sqrt(lambda[2])
+  
+}
