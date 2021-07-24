@@ -1,24 +1,48 @@
 %% DDM
 clear
-a = 1; % upper bound
-z = 0.5;% percentage of starting point
-e = 0;% end
+upper = 1; % upper bound
+start_percent = 0.5;% percentage of starting point
+lower = 0;% end
 drift_rate=0.5;
 steps=0.001;
 s = 1;% standard error of one step
-current = a*z;% real starting point
+current = upper*start_percent;% real starting point
 time = 0;
 
 t(1) = time;
 evidence(1) = current;
-n = 2;% just for index
-while (current<a)&&(current>e)
+while (current<upper)&&(current>lower)
     time=time+steps;
     current=current+normrnd(drift_rate*steps,sqrt(s*s*steps));
-    t(n)=time;
-    evidence(n)=current;
-    n=n+1;
+    t = [t,time];
+    evidence = [evidence,current];
 end
 figure
 plot(t,evidence);
-ylim([e,a]);
+ylim([lower,upper]);
+%%
+clear
+start_percent = 0.5;% percentage of starting point
+lower = 0;% end
+steps=0.001;
+s = 1;% standard error of one step
+allruns = 10000;
+uppers = 1:0.2:2.8;
+drift_rate = 0.1;
+
+for i = 1:10
+    upper = uppers(i);
+    ACC(i) = 0;
+    for run = 1:allruns
+        time = 0;
+        current = upper*start_percent;% starting point
+        while (current<upper)&&(current>lower)
+            time=time+steps;
+            current=current+normrnd(drift_rate*steps,sqrt(s*s*steps));
+        end
+        if current>=upper
+            ACC(i) = ACC(i) + 1;
+        end
+    end
+end
+plot(uppers,ACC/allruns);
