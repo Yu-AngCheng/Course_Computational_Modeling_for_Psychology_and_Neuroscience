@@ -1,11 +1,12 @@
 %% DDM
 clear
+rng default
 upper = 1; % upper bound
 start_percent = 0.5;% percentage of starting point
 lower = 0;% end
-drift_rate=0.5;
+drift_rate=1.5;
 steps=0.001;
-s = 1;% standard error of one step
+s = 0.5;% standard error of one step
 current = upper*start_percent;% real starting point
 time = 0;
 
@@ -18,8 +19,13 @@ while (current<upper)&&(current>lower)
     evidence = [evidence,current];
 end
 figure
-plot(t,evidence);
+plot(t,evidence,'-k','LineWidth',1);
+hold on
+plot(t,t*drift_rate+upper*start_percent,'-r','LineWidth',1);
 ylim([lower,upper]);
+box off
+xlabel('Time')
+ylabel('Evidence')
 %%
 clear
 start_percent = 0.5;% percentage of starting point
