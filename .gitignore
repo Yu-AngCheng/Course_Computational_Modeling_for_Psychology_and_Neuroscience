@@ -1,11 +1,7 @@
 **/.idea/
 course_slides/
 course_materials/
-*.zip
 Bayesian_examples/
 *.asv
-*.docx
-*.pptx
-*.rar
-*.pdf
+temp.*
 **/New Folder/
